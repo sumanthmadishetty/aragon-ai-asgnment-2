@@ -131,7 +131,11 @@ async function runAllValidations(
     const hash = await calculateImageHash(processedBuffer);
 
     // 5. Check for duplicate images
-    const duplicateImage = await findDuplicateImage(hash, image.id);
+    const duplicateImage = await findDuplicateImage(
+      hash,
+      image.id,
+      image.batchId
+    );
     if (duplicateImage) {
       return {
         valid: false,
@@ -237,7 +241,8 @@ async function calculateImageHash(buffer: Buffer): Promise<string> {
  */
 async function findDuplicateImage(
   hash: string,
-  currentImageId: string
+  currentImageId: string,
+  batchId: string
 ): Promise<Image | null> {
   // First try an exact match for efficiency
   const exactMatch = await prisma.image.findFirst({
@@ -245,6 +250,7 @@ async function findDuplicateImage(
       hash,
       id: { not: currentImageId },
       status: ImageStatus.VALIDATED,
+      batchId: batchId,
     },
   });
 
@@ -266,6 +272,7 @@ async function findDuplicateImage(
       id: { not: currentImageId },
       status: ImageStatus.VALIDATED,
       hash: { not: null },
+      batchId: batchId,
     },
     select: {
       id: true,

@@ -1,0 +1,53 @@
+.collapsible-section {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .section-icon {
+    margin-right: 12px;
+    font-size: 18px;
+  }
+  
+  .section-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .toggle-button {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+  
+  .toggle-button:hover {
+    color: #333;
+  }
+  
+  .section-content {
+    padding: 0 24px 24px;
+  }

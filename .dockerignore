@@ -1,0 +1,24 @@
+# Common
+node_modules
+npm-debug.log
+yarn-error.log
+.git
+.github
+.vscode
+.idea
+*.md
+!README.md
+
+# Client specific
+client/build
+client/node_modules
+client/coverage
+client/.env*
+!client/.env.production
+
+# Server specific
+server/dist
+server/node_modules
+server/coverage
+server/.env*
+!server/.env.production

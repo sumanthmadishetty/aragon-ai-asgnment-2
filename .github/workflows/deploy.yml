@@ -1,0 +1,69 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Server build and test
+      - name: Server - Install dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Server - Lint
+        working-directory: ./server
+        run: npm run lint
+        
+      - name: Server - Build
+        working-directory: ./server
+        run: npm run build:prod
+
+      # Client build and test
+      - name: Client - Install dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: Client - Build
+        working-directory: ./client
+        run: npm run build
+
+      # Docker build (if we're not in a PR)
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Server Docker image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./server
+          push: true
+          tags: yourorg/server:latest,yourorg/server:${{ github.sha }}
+
+      - name: Build and push Client Docker image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./client
+          push: true
+          tags: yourorg/client:latest,yourorg/client:${{ github.sha }}
+
+  # Add deployment step as needed for your hosting provider
+  # Example for cloud deployment would go here
